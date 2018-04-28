@@ -201,6 +201,16 @@ def find_cross_correlations_w_range_ignored():
 
         plt.clf()
 
+def animate(i):
+    arr = frames[i]
+    vmax     = np.max(arr)
+    vmin     = np.min(arr)
+    im.set_data(arr)
+    im.set_clim(vmin, vmax)
+    tx.set_text('Frame {0}'.format(i))
+    # In this version you don't have to do anything to the colorbar,
+    # it updates itself when the mappable it watches (im) changes
+
 def find_correlations_for_config():
 
     # for each input,
@@ -297,4 +307,65 @@ find_cross_correlations()
 find_correlations_for_config()
 """
 
-find_cross_correlations_w_range_ignored()
+#find_cross_correlations_w_range_ignored()
+
+
+"""
+BELOW: ANIMATE CORRELATION EVOLUTIONS
+"""
+
+# for each input,
+# histogram of similarity measurements:
+# coherence histogram, each axis 0000, 0001, 0010, 0100, 1000, etc.
+# 16 x 16 coherence plot
+clist = ["".join(seq) for seq in itertools.product("01", repeat=4)]
+
+for inpair in ['00', '01', '10', '11']:
+
+    H = np.empty((2**4, 2**4, 96))
+    for ci_row in clist:
+
+        for ci_col in clist:
+
+            sig1 = np.loadtxt('smallavg/' + ci_row + '_' + inpair + '.txt')
+            sig2 = np.loadtxt('smallavg/' + ci_col + '_' + inpair + '.txt')
+
+            from sklearn.preprocessing import minmax_scale
+
+            # scale signals between 0 and 1
+            sig1 = minmax_scale(sig1)
+            sig2 = minmax_scale(sig2)
+
+            diff = np.absolute(sig1 - sig2)
+
+            rindex = clist.index(ci_row)
+            cindex = clist.index(ci_col)
+
+            H[rindex][cindex][:] = diff
+
+            # This is now a list of arrays rather than a list of artists
+
+    frames = []
+    for i in range(96):
+        curVals  = H[...,i]
+        frames.append(curVals)
+
+    import matplotlib.animation as animation
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    # I like to position my colorbars this way, but you don't have to
+    div = make_axes_locatable(ax)
+    cax = div.append_axes('right', '5%', '5%')
+
+    cv0 = frames[0]
+    im = ax.imshow(cv0, origin='lower') # Here make an AxesImage rather than contour
+    cb = fig.colorbar(im, cax=cax)
+    tx = ax.set_title('Frame 0')
+
+    ani = animation.FuncAnimation(fig, animate, frames=96)
+    ani.save('smallimg/tdiff/' + inpair + '.gif', dpi=80, writer='imagemagick')
+
+    plt.clf()
