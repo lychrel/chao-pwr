@@ -1,3 +1,4 @@
+![abs-diff gif](smallimg/tdiff/01.gif)
 # cpower
 subjecting chaos-based logic gates to power-analysis side-channel attacks
 
