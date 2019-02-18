@@ -1,6 +1,10 @@
 <a href="https://ibb.co/Tby8x7T"><img src="https://i.ibb.co/3MKN9js/Screen-Shot-2019-02-18-at-5-30-59-PM.png" alt="Screen-Shot-2019-02-18-at-5-30-59-PM" border="0" width=50%></a>
 # cpower
-subjecting chaos-based logic gates to power-analysis side-channel attacks
+NC State's [Nonlinear Artificial Intelligence Lab](https://www.physics.ncsu.edu/NAIL/index.html) (formerly its Applied Chaos Lab) has constructed circuits which leverage an evolving chaotic dynamical system to implement logic functions.
+
+For reasons elucidated in ``doc``, the lab wondered if these "[chaotic logic gates](https://ieeexplore.ieee.org/document/7571173)" would be less susceptible than an ordinary computer to side-channel attacks.
+
+Thus, I subjected these gates to Simple Power-Analysis (SPA) attacks, computing various metrics of robustness against them. 
 
 ### Outline
 
